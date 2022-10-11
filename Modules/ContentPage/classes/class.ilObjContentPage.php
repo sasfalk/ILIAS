@@ -147,8 +147,17 @@ class ilObjContentPage extends ilObject2 implements ilContentPageObjectConstants
             )
         );
 
+        global $DIC;
+
         $lpSettings = new ilLPObjSettings($this->getId());
         $lpSettings->cloneSettings($new_obj->getId());
+
+        //clone LSItem, if COPA is part of a Learning Sequence
+        $parent_nd = $this->tree->getParentNodeData($this->getRefId());
+        if ($parent_nd['type'] === 'lso') {
+            $lso = ilObjLearningSequence::getInstanceByRefId($parent_nd['ref_id']);
+            $lso->cloneLSItem($new_obj, $this->getRefId());
+        }
     }
 
     /**

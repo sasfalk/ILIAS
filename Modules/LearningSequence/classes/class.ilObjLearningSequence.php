@@ -371,6 +371,31 @@ class ilObjLearningSequence extends ilContainer
         $db->storeItems($ls_items);
     }
 
+    public function cloneLSItem($new_obj, $old_ref_id) {
+        $items = $this->getLSItems();
+        $ls_item = array();
+        foreach ($items as $item) {
+            if($item->getRefId() == $old_ref_id) {
+                $post_condition = new ilLSPostCondition(
+                    (int) $new_obj->getRefId(),
+                    $item->getPostCondition()->getConditionOperator(),
+                    $item->getPostCondition()->getValue()
+                );
+                $ls_item[] = new LSItem($item->getType(),
+                    $item->getTitle(),
+                    $item->getDescription(),
+                    $item->getIconPath(),
+                    $item->isOnline(),
+                    $item->getOrderNumber(),
+                    $post_condition,
+                    (int) $new_obj->getRefId()
+                );
+                break;
+            }
+        }
+        $this->storeLSItems($ls_item);
+    }
+
     /**
      * Delete post conditions for ref ids.
      * @param int[]

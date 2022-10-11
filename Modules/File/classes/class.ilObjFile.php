@@ -499,6 +499,13 @@ class ilObjFile extends ilObject2 implements ilObjFileImplementationInterface
         $obj_settings->cloneSettings($new_object->getId());
         unset($obj_settings);
 
+        //clone LSItem, if Exercise is part of a Learning Sequence
+        $parent_nd = $this->tree->getParentNodeData($this->getRefId());
+        if ($parent_nd['type'] === 'lso') {
+            $lso = ilObjLearningSequence::getInstanceByRefId($parent_nd['ref_id']);
+            $lso->cloneLSItem($new_object, $this->getRefId());
+        }
+
         return $new_object;
     }
 

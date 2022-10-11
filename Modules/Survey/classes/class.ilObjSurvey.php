@@ -3812,6 +3812,13 @@ class ilObjSurvey extends ilObject
         $obj_settings = new ilLPObjSettings($this->getId());
         $obj_settings->cloneSettings($newObj->getId());
         unset($obj_settings);
+
+        //clone LSItem, if Exercise is part of a Learning Sequence
+        $parent_nd = $this->tree->getParentNodeData($this->getRefId());
+        if ($parent_nd['type'] === 'lso') {
+            $lso = ilObjLearningSequence::getInstanceByRefId($parent_nd['ref_id']);
+            $lso->cloneLSItem($newObj, $this->getRefId());
+        }
         
         return $newObj;
     }

@@ -336,6 +336,13 @@ class ilObjExercise extends ilObject
         );
         $orgu_object_settings->update();
 
+        //clone LSItem, if Exercise is part of a Learning Sequence
+        $parent_nd = $this->tree->getParentNodeData($this->getRefId());
+        if ($parent_nd['type'] === 'lso') {
+            $lso = ilObjLearningSequence::getInstanceByRefId($parent_nd['ref_id']);
+            $lso->cloneLSItem($new_obj, $this->getRefId());
+        }
+
         return $new_obj;
     }
     

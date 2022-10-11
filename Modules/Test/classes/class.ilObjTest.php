@@ -7200,6 +7200,13 @@ class ilObjTest extends ilObject implements ilMarkSchemaAware, ilEctsGradesEnabl
         include_once('./Services/Tracking/classes/class.ilLPObjSettings.php');
         $obj_settings = new ilLPObjSettings($this->getId());
         $obj_settings->cloneSettings($newObj->getId());
+
+        //clone LSItem, if Exercise is part of a Learning Sequence
+        $parent_nd = $this->tree->getParentNodeData($this->getRefId());
+        if ($parent_nd['type'] === 'lso') {
+            $lso = ilObjLearningSequence::getInstanceByRefId($parent_nd['ref_id']);
+            $lso->cloneLSItem($newObj, $this->getRefId());
+        }
         
         return $newObj;
     }
