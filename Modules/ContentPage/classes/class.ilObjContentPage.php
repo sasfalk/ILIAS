@@ -147,8 +147,6 @@ class ilObjContentPage extends ilObject2 implements ilContentPageObjectConstants
             )
         );
 
-        global $DIC;
-
         $lpSettings = new ilLPObjSettings($this->getId());
         $lpSettings->cloneSettings($new_obj->getId());
 
