@@ -130,4 +130,11 @@ class LSItem
     {
         return $this->ref_id;
     }
+
+    public function withRefId(int $a_ref_id) : LSItem
+    {
+        $clone = clone $this;
+        $clone->ref_id = $a_ref_id;
+        return $clone;
+    }
 }
