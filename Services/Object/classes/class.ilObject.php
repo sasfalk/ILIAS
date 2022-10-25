@@ -1875,8 +1875,6 @@ class ilObject
         } else {
             ilLoggerFactory::getLogger('obj')->debug('Tree copy is disabled');
         }
-
-        $this->insertCopyMappingInfoToDB($new_obj);
         
         include_once('./Services/AdvancedMetaData/classes/class.ilAdvancedMDValues.php');
         ilAdvancedMDValues::_cloneValues($this->getId(), $new_obj->getId());
@@ -2321,24 +2319,5 @@ class ilObject
     public function getPossibleSubObjects($a_filter = true)
     {
         return $this->objDefinition->getSubObjects($this->type, $a_filter);
-    }
-
-    /**
-     * Inserts copy-mapping info to database.
-     *
-     * @param       \ilObject       $new_object
-     * @return      void
-     */
-    protected function insertCopyMappingInfoToDB(\ilObject $new_object)
-    {
-        global $DIC;
-        $db = $DIC["ilDB"];
-        $db->insert(
-            "copy_mappings",
-            [
-                "obj_id" => ["integer", $new_object->getId()],
-                "source_id" => ["integer", $this->getId()]
-            ]
-        );
     }
 } // END class.ilObject
