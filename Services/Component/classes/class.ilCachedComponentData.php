@@ -84,6 +84,10 @@ class ilCachedComponentData
     /**
      * @var array
      */
+    protected $il_plugin_by_slotid = array();
+    /**
+     * @var array
+     */
     protected $il_plugin_by_name = array();
 
 
@@ -155,6 +159,7 @@ class ilCachedComponentData
         while ($rec = $ilDB->fetchAssoc($set)) {
             $this->il_plugin_by_id[$rec['plugin_id']] = $rec;
             $this->il_plugin_by_name[$rec['name']] = $rec;
+            $this->il_plugin_by_slotid[$rec['slot_id']][] = $rec;
             if ($rec['active'] == 1) {
                 $this->il_plugin_active[$rec['slot_id']][] = $rec;
             }
@@ -472,6 +477,16 @@ class ilCachedComponentData
         } else {
             return array();
         }
+    }
+
+    /**
+     * @param $slot_id
+     *
+     * @return array
+     */
+    public function lookupPluginsBySlotId($slot_id)
+    {
+            return $this->il_plugin_by_slotid[$slot_id];
     }
 
 

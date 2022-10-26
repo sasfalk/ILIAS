@@ -318,8 +318,8 @@ class ilPluginSlot
     {
         global $DIC;
         $ilPluginAdmin = $DIC['ilPluginAdmin'];
-        
-        return $ilPluginAdmin->getActivePluginsForSlot(
+
+        return $ilPluginAdmin->getPluginsForSlot(
             $this->getComponentType(),
             $this->getComponentName(),
             $this->getSlotId()
@@ -345,6 +345,29 @@ class ilPluginSlot
                 );
         }
         
+        return $slots;
+    }
+
+    /**
+     *
+     * Get all plugin slots where plugins are available
+     */
+    public static function getAvailableSlots() : array
+    {
+        $cached_component = ilCachedComponentData::getInstance();
+        $recs = $cached_component->getIlPluginslotById();
+        $slots = array();
+        foreach ($recs as $rec) {
+            if($cached_component->lookupPluginsBySlotId($rec["id"])) {
+                $pos = strpos($rec["component"], "/");
+                $slots[] = array(
+                    "component_type" => substr($rec["component"], 0, $pos),
+                    "component_name" => substr($rec["component"], $pos + 1),
+                    "slot_id" => $rec["id"],
+                    "slot_name" => $rec["name"]
+                );
+            }
+        }
         return $slots;
     }
 }
