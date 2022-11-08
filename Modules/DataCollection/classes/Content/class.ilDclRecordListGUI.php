@@ -114,6 +114,7 @@ class ilDclRecordListGUI
                 $this->listRecords(true);
                 break;
             case self::CMD_LIST_RECORDS:
+                $DIC->logger()->root()->info("Ausgabe");
                 $this->setSubTabs();
                 $this->listRecords();
                 break;
@@ -153,6 +154,7 @@ class ilDclRecordListGUI
         $list = $this->getRecordListTableGUI($use_tableview_filter);
 
         $this->createSwitchers();
+        $DIC->logger()->root()->info("Test");
 
         $permission_to_add_or_import = ilObjDataCollectionAccess::hasPermissionToAddRecord($this->parent_obj->ref_id, $this->table_id) and $this->table_obj->hasCustomFields();
         if ($permission_to_add_or_import) {
