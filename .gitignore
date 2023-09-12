@@ -12,6 +12,8 @@
 /Services/PHPUnit/config/cfg.phpunit.php
 /nbproject
 /templates/default/delos.css.map
+/infomantis_anpassungen
+docker-compose.yml
 
 # General Patterns
 *.bak
