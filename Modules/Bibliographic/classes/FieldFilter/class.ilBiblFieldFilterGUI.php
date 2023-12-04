@@ -114,7 +114,8 @@ class ilBiblFieldFilterGUI
             $this->toolbar()->addText($this->dic()->ui()->renderer()->render([$button]));
         }
 
-        $table = new ilBiblFieldFilterTableGUI($this, $this->facade);
+        //$table = new ilBiblFieldFilterTableGUI($this, $this->facade);
+        $table = new ilBiblFieldFilterTable($this, $this->facade);
         $this->tpl()->setContent($table->getHTML());
     }
 
