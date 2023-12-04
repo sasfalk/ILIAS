@@ -3,10 +3,10 @@
 use ILIAS\UI\URLBuilder;
 
 /**
- * Class ilTable
+ * Class ilBiblFieldFilterTable
  *
  */
-class ilTable
+class ilBiblFieldFilterTable
 {
     use \ILIAS\Modules\OrgUnit\ARHelper\DIC;
     protected \ILIAS\UI\Component\Modal\RoundTrip $modal;
@@ -17,7 +17,7 @@ class ilTable
 
 
     /**
-     * ilTable constructor.
+     * ilBiblFieldFilterTable constructor.
      */
 
     public function __construct(?object $a_parent_obj, ilBiblFactoryFacade $facade)
@@ -54,14 +54,19 @@ class ilTable
                 $url_builder->withParameter($action_token, $this->ctrl()->getLinkTargetByClass(ilBiblFieldFilterGUI::class, ilBiblFieldFilterGUI::CMD_EDIT)),
                 $id_token
             ),
-            'delete' => $f->table()->action()->single(
+            'delete1' => $f->table()->action()->single(
                 $this->lng()->txt("delete"),
                 $url_builder->withParameter($action_token, ilBiblFieldFilterGUI::CMD_RENDER_INTERRUPTIVE),
                 $id_token
             )->withAsync(),
+            'delete' => $f->table()->action()->single(
+                'do something else',
+                $url_builder->withParameter($action_token, "delete"),
+                $id_token
+            )->withAsync(),
         ];
 
-        $data_retrieval = new DataRetrieval($f, $r, $facade);
+        $data_retrieval = new ilBiblFieldFilterTableDataRetrieval($f, $r, $facade);
 
         $this->table = $f->table()->data("", $columns, $data_retrieval)->withActions($actions);
 
@@ -71,14 +76,12 @@ class ilTable
         if ($query->has($action_token->getName())) {
             $action = $query->retrieve($action_token->getName(), $refinery->to()->string());
             $ids = $query->retrieve($id_token->getName(), $refinery->custom()->transformation(fn($v) => $v));
-
             if ($action === 'delete') {
                 $items = [];
                 $ids = explode(',', $ids);
                 foreach ($ids as $id) {
                     $items[] = $f->modal()->interruptiveItem()->keyValue($id, $id_token->getName(), $id);
                 }
-
                 $delete_modal = $f->modal()->interruptive(
                     '',
                     '',
@@ -88,7 +91,8 @@ class ilTable
                 $this->interruptive_modals[] = $delete_modal;
                 $delete_modal->getShowSignal();
                 $result[] = $items;
-            } else {
+            }
+            if ($action === 'edit') {
                 $this->ctrl()->getLinkTargetByClass(ilBiblFieldFilterGUI::class, ilBiblFieldFilterGUI::CMD_EDIT);
             }
         }

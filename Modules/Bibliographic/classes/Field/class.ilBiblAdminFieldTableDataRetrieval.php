@@ -5,10 +5,10 @@ use ILIAS\Data\Range;
 use ILIAS\UI\Component\Table as I;
 
 /**
- * Class DataRetrieval
+ * Class ilBiblAdminFieldTableDataRetrieval
  *
  */
-class DataRetrieval1 implements I\DataRetrieval
+class ilBiblAdminFieldTableDataRetrieval implements I\DataRetrieval
 {
     use \ILIAS\Modules\OrgUnit\ARHelper\DIC;
     protected \ilBiblAdminFactoryFacadeInterface $facade;
