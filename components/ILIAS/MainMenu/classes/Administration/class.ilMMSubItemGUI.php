@@ -280,13 +280,15 @@ class ilMMSubItemGUI extends ilMMAbstractItemGUI
         $field_ids = $query_params[$name] ?? []; // array of field ids
         $field_id = (string) (is_array($field_ids) ? end($field_ids) : $field_ids); // return the last field id
 
-        return $this->unhash($field_id);    }
+        return $this->unhash($field_id);
+    }
 
     private function saveFieldIdsInRequest(): void
     {
         $field_id = $this->getFieldIdFromRequest();
 
-        $this->ctrl->setParameter($this, $this->table->getIdToken()->getName(), $this->hash($field_id));    }
+        $this->ctrl->setParameter($this, $this->table->getIdToken()->getName(), $this->hash($field_id));
+    }
 
     /**
      * @throws Throwable
