@@ -164,7 +164,7 @@ class ilMMSubItemGUI extends ilMMAbstractItemGUI
                     throw new ilException("Field not found");
                 }
                 $this->tab_handling->initTabs(ilObjMainMenuGUI::TAB_MAIN, self::CMD_VIEW_SUB_ITEMS, true, $this->ctrl->getCallHistory()[2][ilCtrlInterface::PARAM_CMD_CLASS] ?? '');
-                $g = new ilMMItemTranslationGUI($this->getMMItemFromRequest(), $this->repository);
+                $g = new ilMMItemTranslationGUI($field, $this->repository);
                 $this->ctrl->forwardCommand($g);
                 break;
             default:
@@ -206,7 +206,7 @@ class ilMMSubItemGUI extends ilMMAbstractItemGUI
      */
     private function edit($DIC): string
     {
-        $f = new ilMMSubitemFormGUI($DIC->ctrl(), $DIC->ui()->factory(), $DIC->ui()->renderer(), $this->lng, $this->getMMItemFromRequest(), $this->repository);
+        $f = new ilMMSubitemFormGUI($DIC->ctrl(), $DIC->ui()->factory(), $DIC->ui()->renderer(), $this->lng, $this->getFieldFromRequest(), $this->repository);
 
         return $f->getHTML();
     }
@@ -273,20 +273,20 @@ class ilMMSubItemGUI extends ilMMAbstractItemGUI
         return $this->table->getHTML();
     }
 
-    protected function getFieldIdFromRequest(): int
+    protected function getFieldIdFromRequest(): string
     {
         $query_params = $this->http->request()->getQueryParams(); // aka $_GET
         $name = $this->table->getIdToken()->getName(); // name of the query parameter from the table
         $field_ids = $query_params[$name] ?? []; // array of field ids
-        return (int) (is_array($field_ids) ? end($field_ids) : $field_ids); // return the last field id
-    }
+        $field_id = (string) (is_array($field_ids) ? end($field_ids) : $field_ids); // return the last field id
+
+        return $this->unhash($field_id);    }
 
     private function saveFieldIdsInRequest(): void
     {
         $field_id = $this->getFieldIdFromRequest();
 
-        $this->ctrl->setParameter($this, $this->table->getIdToken()->getName(), $field_id);
-    }
+        $this->ctrl->setParameter($this, $this->table->getIdToken()->getName(), $this->hash($field_id));    }
 
     /**
      * @throws Throwable
@@ -302,7 +302,7 @@ class ilMMSubItemGUI extends ilMMAbstractItemGUI
 
     private function delete(): void
     {
-        $item = $this->getMMItemFromRequest();
+        $item = $this->getFieldFromRequest();
         if ($item->isDeletable()) {
             $this->repository->deleteItem($item);
         }
@@ -318,7 +318,7 @@ class ilMMSubItemGUI extends ilMMAbstractItemGUI
 
     private function move(): void
     {
-        $item = $this->getMMItemFromRequest();
+        $item = $this->getFieldFromRequest();
         if ($item->isInterchangeable()) {
             $item->setParent('');
             $this->repository->updateItem($item);
